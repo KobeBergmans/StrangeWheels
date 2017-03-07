@@ -20,7 +20,7 @@ function wheel2road(r,h=0.0005)
   # y: vector of heights of the road at the time defined by Θ[k]
 
   # M is max radius, so perimeter is 2piM
-  M = max(r(linspace(-pi/2,3*pi/2,1000)))
+  M = maximum(r(linspace(-pi/2,3*pi/2,1000)))
 
   # For evenly spaced angles Θ, compute the position of the wheel axle
   Θ = -pi/2           # Wheel begins in this orientation
@@ -36,9 +36,9 @@ function wheel2road(r,h=0.0005)
 end
 
 
-function moviefromwheel(r)
+function wheel2interact(r)
 
-  Θ,x,y = polarwheel2road(r,h)
+  Θ,x,y = wheel2road(r,h)
 
   # Produce the points traced out by the wheel for all times
   n = length(x)
@@ -49,17 +49,16 @@ function moviefromwheel(r)
   wheelx = x*ones(1,1001) + radiusmesh.*cos(anglemesh)
   wheely = radiusmesh.*sin(anglemesh)
 
-  M = max(r(angles))
+  M = maximum(r(angles))
 
   # Preallocate number of frames
   nframes = 100;
   step = floor(n/nframes);
 
-  # Plot the movie
-  @gif for k = 1:step:n
+  #@manipulate for k = 1:step:n
     plot(x,y,linewidth=3,xlims=(0,3pi*M),ylims=(-2M,2M))   # Road
     plot!([0,3pi*M],[0,0],color=:black,linestyle=:dot)    # Level of axle
     plot!(x[k]+M*.05*cos(angles),M*.05*sin(angles),color=:black,linewidth=3) # axle
     plot!(wheelx[k,:],wheely[k,:],color=:black,linewidth=3) # wheel at time t_k
-  end every 10
+  #end
 end
