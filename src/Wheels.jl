@@ -1,5 +1,5 @@
 import Plots
 
-export moviefromwheel, polarwheel2road
+export restrict, moviefromwheel, wheel2road
 
 include("helper.jl")
