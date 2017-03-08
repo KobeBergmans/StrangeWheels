@@ -31,16 +31,16 @@ function plotwheel(t,Θ,x,y,r)
   angles = [angles;angles[1]]  # Ensures the wheel is a closed curve
   rads = r(angles)
   M = maximum(rads)
-  angles = angles - pi/2 +Θ[k]
+  angles = angles - pi/2 - Θ[k]
 
   # Road
-  plot(x,y,linewidth=3,xlims=(0,3pi*M),ylims=(-2.5M,2.5M),legend=false)
+  plot(x,y,linewidth=3,xlims=(0,3pi*M),ylims=(-3M,3M),legend=false)
   # Level of axle
   plot!([0,3pi*M],[0,0],color=:black,linestyle=:dash)
   # axle
   plot!(x[k]+M*.05*cos(angles),M*.05*sin(angles),color=:black,linewidth=3)
   # wheel at time t_k
-  plot!(x[k]+rads.*sin(angles),rads.*cos(angles),color=:black,linewidth=3)
+  plot!(x[k]+rads.*cos(angles),rads.*sin(angles),color=:black,linewidth=3)
 end
 
 # function wheel2interact(r,h=0.0005)
