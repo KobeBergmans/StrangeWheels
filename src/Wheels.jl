@@ -2,11 +2,11 @@ import Plots, Interact
 
 export restrict
 
-export wheel2interact, wheel2road, plotwheel
+export wheel2road, road2wheel, plotwheel
 
 include("helper.jl")
 include("Wheel2Road.jl")
-include("Road2Wheel.jl")
+include("Plot.jl")
 
 
 # Create a function for the wheel in polar coords
