@@ -45,3 +45,15 @@ function road2wheel(f = x->1)
 
   Θ,x,y
 end
+
+function data_road2wheel(θ,r)
+  # Input: data points Θ (angles) and r (radius of wheel at that angle)
+  # Output: data points x (x-position of axle) and y (y-position of road)
+
+  # Euler's method for x'(Θ) = r(Θ), x(Θ[1]) = 0
+  x = [0;cumsum(r[1:end-1].*diff(θ))]
+
+  y = -r
+
+  x,y
+end

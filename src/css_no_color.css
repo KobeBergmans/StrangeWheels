@@ -1,0 +1,9 @@
+* {
+  color: #000000;
+  font-size: 15px;
+}
+
+#MyVBox {
+  border: solid 12px #FFFFFF;
+  background-color: #FFFFFF;
+}

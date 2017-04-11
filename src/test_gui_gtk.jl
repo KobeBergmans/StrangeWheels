@@ -446,6 +446,7 @@ function start_gui()
         if e.can_draw
             draw(widget)
             ctx = getgc(widget)
+            @show ctx
             e.coords = vcat(e.coords,[event.x event.y])
             refresh(ctx,e)
             stroke(ctx)
