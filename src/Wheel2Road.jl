@@ -46,14 +46,14 @@ function equi_road2wheel(f = x->1)
   Θ,x,y
 end
 
-unction data_road2wheel(Θ,r)
+function data_road2wheel(Θ,r)
   # Input: data points Θ (angles) and r (radius of wheel at that angle)
   # Output: data points x (x-position of axle) and y (y-position of road)
 
   # Euler's method for x'(Θ) = r(Θ), x(Θ[1]) = 0
   x = [0;cumsum(r[1:end-1].*diff(Θ))]
 
-  y = -r(Θ)
+  y = -r
 
   x,y
 end
