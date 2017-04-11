@@ -2,7 +2,11 @@ import Plots, Interact
 
 export restrict
 
-export wheel2road, road2wheel, plotwheel
+export equi_wheel2road, data_wheel2road
+
+export plotwheel
+
+export equi_road2wheel, data_road2wheel
 
 include("helper.jl")
 include("Wheel2Road.jl")

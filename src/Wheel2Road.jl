@@ -3,7 +3,7 @@
 # Since the road and wheel in general have no differentiability, there
 # is no real benefit to using better ODE solvers
 
-function wheel2road(r = Θ->1+.25abs(sin(3Θ)))
+function equi_wheel2road(r = Θ->1+.25abs(sin(3Θ)))
   # Input: Function of wheel in polar coordinates
   # Output: 1 revolution of the wheel on road
   # Θ: linspace of 1000 equispaced angles, Θ[1] = -π/2, Θ[1000] = 3π/2
@@ -23,7 +23,7 @@ function wheel2road(r = Θ->1+.25abs(sin(3Θ)))
   Θ,x,y
 end
 
-function road2wheel(f = x->1)
+function equi_road2wheel(f = x->1)
   # Input: Function for road, f(x)
   # Output: 1 revolution of the wheel on road
   # Θ: linspace of 1000 equispaced angles, Θ[1] = -π/2, Θ[1000] = 3π/2
@@ -46,14 +46,26 @@ function road2wheel(f = x->1)
   Θ,x,y
 end
 
-function data_road2wheel(θ,r)
+unction data_road2wheel(Θ,r)
   # Input: data points Θ (angles) and r (radius of wheel at that angle)
   # Output: data points x (x-position of axle) and y (y-position of road)
 
   # Euler's method for x'(Θ) = r(Θ), x(Θ[1]) = 0
-  x = [0;cumsum(r[1:end-1].*diff(θ))]
+  x = [0;cumsum(r[1:end-1].*diff(Θ))]
 
-  y = -r
+  y = -r(Θ)
 
   x,y
+end
+
+function data_wheel2road(x,y)
+  # Input: data points x and y for the road
+  # Output: data points Θ and r for the wheel
+
+  # Euler's method for Θ'(x) = = -1/y(x), Θ(x[1]) = -π/2
+  Θ = -π/2 + [0;cumsum(-diff(x)./y[1:end-1])]
+
+  r = -y
+
+  Θ,r
 end
