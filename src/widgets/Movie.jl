@@ -37,49 +37,63 @@ end
 
 # movie
 type Movie{n}
-    window
     canvas
     frames
-    condition
+    timer # nothing if not playing, Timer if we are
 end
 
 function Movie(n)
-    window = Gtk.GtkWindow("wheel animation",n,n)
     canvas = Gtk.GtkCanvas(n,n)
-    stop_btn = Gtk.GtkButton("done")
-    layout = Gtk.GtkBox(:v)
-    layouth = Gtk.GtkBox(:h)
     n = sum(map(x->x[1:5],readdir("images")).=="frame")
     frames = Frames([read_from_png("images/frame_$(i).png") for i = 1:n])
-    condition = Condition()
 
-    push!(window, layout)
-    push!(layout, canvas)
-    push!(layout, stop_btn)
-
-    setproperty!(window,:resizable,false)
-
-    movie = Movie{n}(window, canvas, frames, condition)
-
-    signal_connect((x)->notify(condition), window, "destroy")
-    signal_connect((x)->notify(condition), stop_btn, "clicked")
-
-    showall(movie.window)
+    movie = Movie{n}(canvas, frames, nothing)
 
     return movie
 end
 
-function play(movie::Movie)
-    timer = init(movie.canvas, movie.frames)
-    draw(canvas -> draw_frame(canvas, movie.frames), movie.canvas)
-    wait(movie.condition)
-    close(timer)
+function reload(movie::Movie)
+    n = sum(map(x->x[1:5],readdir("images")).=="frame")
+    movie.frames = Frames([read_from_png("images/frame_$(i).png") for i = 1:n])
 end
 
-# I don't manage to call another toplevel window from an existing toplevel window
-# and to make it play the movie. HACK: I will call this file from termial using run(`...`)
-m = Movie(400)
-play(m)
+function stop_playing!(movie::Movie)
+    if movie.timer != nothing
+        close(movie.timer)
+        movie.timer = nothing
+        # clear canvas
+        ctx = getgc(movie.canvas)
+        h = height(movie.canvas)
+        w = width(movie.canvas)
+        set_source_rgb(ctx, 1, 1, 1)
+        rectangle(ctx, 0, 0, w, h)
+        fill(ctx)
+        reveal(movie.canvas)
+    end
+end
+
+function stept(movie::Movie)
+    next(movie.frames)
+end
+
+function play(movie::Movie)
+    stop_playing!(movie)
+    dt = 0.03
+    movie.timer = Timer(timer -> draw_frame(movie.canvas, movie.frames), dt, dt)
+end
+        
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -10,8 +10,8 @@ type TogglePanel
     pacman
     peanut
     cardioid
-    pentagram
     shell
+    pentagram
 end
 
 # outer constructor for TogglePanel
@@ -23,8 +23,8 @@ TogglePanel() = TogglePanel(
     Gtk.GtkRadioButton("pacman"),
     Gtk.GtkRadioButton("peanut"),
     Gtk.GtkRadioButton("cardioid"),
-    Gtk.GtkRadioButton("pentagram"),
-    Gtk.GtkRadioButton("shell")
+    Gtk.GtkRadioButton("shell"),
+    Gtk.GtkRadioButton("polygon")
 )
 
 function choose_wheel(t::TogglePanel)
@@ -44,8 +44,9 @@ function choose_wheel(t::TogglePanel)
         elseif getproperty(t.cardioid,:active,Bool)
             0.5*(1+ sin(θ-π/2))
         elseif getproperty(t.pentagram,:active,Bool)
-            N = 5
-            -0.75*csc(restrict(θ,-π/2-π/N,-π/2+π/N))
+            N = getproperty(gui.slider,:value,Int64)
+            sc = N == 3 ? 0.5 : 0.75
+            -sc*csc(restrict(θ,-π/2-π/N,-π/2+π/N))
         elseif getproperty(t.shell,:active,Bool)
             1/6*(1 + abs(θ))
         end

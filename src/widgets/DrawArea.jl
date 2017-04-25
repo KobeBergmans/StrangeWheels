@@ -62,7 +62,6 @@ function redraw(d::DrawArea)
     stroke(ctx)
 end
 
-
 # implementation of all actions
 function at_mouse_button1press(d::DrawArea, event)
     if d.first_click
@@ -96,7 +95,7 @@ end
 function at_mouse_button3press_wheel(d::DrawArea, event)
     if d.can_draw
         d.coords = vcat(d.coords,[d.coords[1,1] d.coords[1,2]]) # append first point to make closed wheel
-        npoints = 1000
+        npoints = 2000
         crd_interp = interp1(d.coords,npoints) # interpolate in npoints
         crd_interp = crd_interp[!isnan(crd_interp)]
         n = length(crd_interp)/2

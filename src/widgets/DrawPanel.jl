@@ -11,6 +11,7 @@ type DrawPanel
     check
     animate
     help
+    close
 end
 
 # outer constructor for DrawPanel
@@ -22,7 +23,8 @@ DrawPanel() = DrawPanel(
     Gtk.GtkButton("clear"),
     Gtk.GtkToggleButton("check"),
     Gtk.GtkButton("animate"),
-    Gtk.GtkButton("help")
+    Gtk.GtkButton("help"),
+    Gtk.GtkButton("exit")
 )
 
 function at_clear_btn_clicked(gui::GUI)
@@ -37,6 +39,7 @@ function at_clear_btn_clicked(gui::GUI)
     reveal(gui.drag_area.canvas)
     redraw(gui.draw_area)
     reveal(gui.draw_area.canvas)
+    stop_playing!(gui.movie)
 end
 
 function at_compute_btn_clicked(gui::GUI)
@@ -94,7 +97,6 @@ end
 
 function at_check_btn_clicked(gui::GUI)
     gui.drag_area.check = getproperty(gui.draw_panel.check, :active, Bool)
-    #at_compute_btn_clicked(gui)
 end
 
 function throw_invalid_wheel_warning(gui::GUI,message1,message2)
@@ -154,7 +156,8 @@ end
 function at_animate_btn_clicked{n}(gui::GUI{n})
     if !gui.draw_area.can_draw && !isempty(gui.drag_area.θ) # fool proof check
         compute_animation(gui)
-        run(`julia --color=yes widgets/Movie.jl`)
+        reload(gui.movie)
+        play(gui.movie)
     end
 end
 
@@ -171,7 +174,7 @@ function compute_animation{n}(gui::GUI{n})
     end
 end
 
-function get_frame{n}(gui::GUI{n}, k,teller) # plots wheel at orientation k and saves to png
+function get_frame{n}(gui::GUI{n}, k, teller) # plots wheel at orientation k and saves to png
 
     c = CairoRGBSurface(n,n)
     ctx = CairoContext(c)
@@ -179,6 +182,7 @@ function get_frame{n}(gui::GUI{n}, k,teller) # plots wheel at orientation k and 
     # background
     save(ctx)
     car = read_from_png("car_images/$(get_car(gui.car_panel)).png")
+    scale(ctx,n/400,n/400)
     set_source_surface(ctx, car, 0, 0)
     paint(ctx)
 
@@ -187,9 +191,19 @@ function get_frame{n}(gui::GUI{n}, k,teller) # plots wheel at orientation k and 
 
     d = gui.drag_area
 
+    # interpolate θ, x, y evenly in 0:2π
+    #tt = linspace(-π/2,3π/2,length(d.θ))
+    #itp_x = interpolate((d.θ,), d.x, Gridded(Linear()))
+    #itp_y = interpolate((d.θ,), d.y, Gridded(Linear()))
+    #xx = itp_x[tt]
+    #yy = itp_y[tt]
+    xx = d.x
+    yy = d.y
+    tt = d.θ
+
     # road
-    rx,ry = road2canvas(d.x,d.y,n/4,n/4)
-    t = d.θ
+    rx,ry = road2canvas(xx,yy,n/4,n/4)
+    t = tt
     rx_ = rx
     ry_ = ry
     while rx[1]+rx_[k] > 0
@@ -202,7 +216,7 @@ function get_frame{n}(gui::GUI{n}, k,teller) # plots wheel at orientation k and 
     end
     set_line_width(ctx,3)
     set_source_rgb(ctx, 0, 0, 1)
-    m = length(d.x)
+    m = length(xx)
     for i in 2:length(rx)
         move_to(ctx, rx[i]+rx_[k], 2*n/4 + ry[i])
         line_to(ctx, rx[i-1]+rx_[k], 2*n/4 + ry[i-1])
@@ -210,34 +224,38 @@ function get_frame{n}(gui::GUI{n}, k,teller) # plots wheel at orientation k and 
     stroke(ctx)
 
     # wheel A
-    m = mod(searchsortedfirst(rx+rx_[k],n/4),length(d.x))+1
-    wx,wy = road2canvas(d.y.*sin(d.θ-d.θ[m]),d.y.*cos(d.θ-d.θ[m]),n/4,n/4)
+    m = mod(searchsortedfirst(rx+rx_[k],n/4),length(xx))+1
+    wx,wy = road2canvas(yy.*sin(tt-tt[m]),yy.*cos(tt-tt[m]),n/4,n/4)
     set_source_rgb(ctx, 0, 0, 0)
     set_line_width(ctx,2)
-    for i = 2:length(d.y)
-        move_to(ctx, n/4 - wx[i], n/2 + wy[i])
+    move_to(ctx, n/4 - wx[1], n/2 + wy[1])
+    for i = 2:length(yy)
         line_to(ctx, n/4 - wx[i-1], n/2 + wy[i-1])
-        move_to(ctx, n/4 - wx[i], n/2 + wy[i])
-        line_to(ctx, n/4, 5*n/8) # fill wheel
+        #move_to(ctx, n/4 - wx[i], n/2 + wy[i])
+        #line_to(ctx, n/4, 5*n/8) # fill wheel
     end
-    stroke(ctx)
+    close_path(ctx)
+    stroke_preserve(ctx)
+    fill(ctx)
+
+    # wheel B
+    m = mod(searchsortedfirst(rx+rx_[k],3*n/4),length(xx))+1
+    wx,wy = road2canvas(yy.*sin(tt-tt[m]),yy.*cos(tt-tt[m]),n/4,n/4)
+    set_source_rgb(ctx, 0, 0, 0)
+    move_to(ctx, 3*n/4 - wx[1], n/2 + wy[1])
+    for i = 2:length(yy)
+        line_to(ctx, 3*n/4 - wx[i-1], n/2 + wy[i-1])
+        #move_to(ctx, 3*n/4 - wx[i], n/2 + wy[i])
+        #line_to(ctx, 3*n/4, 5*n/8) # fill wheel
+    end
+    close_path(ctx)
+    stroke_preserve(ctx)
+    fill(ctx)
 
     # axle A
     set_source_rgb(ctx, 1, 1, 1)
     arc(ctx, n/4, 5*n/8, n/100, 0, 2π)
     fill(ctx)
-
-    # wheel B
-    m = mod(searchsortedfirst(rx+rx_[k],3*n/4),length(d.x))+1
-    wx,wy = road2canvas(d.y.*sin(d.θ-d.θ[m]),d.y.*cos(d.θ-d.θ[m]),n/4,n/4)
-    set_source_rgb(ctx, 0, 0, 0)
-    for i = 2:length(d.y)
-        move_to(ctx, 3*n/4 - wx[i], n/2 + wy[i])
-        line_to(ctx, 3*n/4 - wx[i-1], n/2 + wy[i-1])
-        move_to(ctx, 3*n/4 - wx[i], n/2 + wy[i])
-        line_to(ctx, 3*n/4, 5*n/8) # fill wheel
-    end
-    stroke(ctx)
 
     # axle B
     set_source_rgb(ctx, 1, 1, 1)

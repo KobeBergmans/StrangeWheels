@@ -139,7 +139,7 @@ function wheel_has_cusp(x,y,rx,ry,k,h)
     while valid_wheel && i <= length(rx)
         idx = searchsortedfirst(x*h/2,restrict(rx[i],x[1]*h/2,x[end]*h/2))
         if idx < length(x)
-            valid_wheel = h/2*(1-y[idx]) >= ry[i]-0.5
+            valid_wheel = h/2*(1-y[idx]) >= ry[i]-1.5
         end
         i += 1
     end
