@@ -21,7 +21,8 @@ GUI() = begin
 
     # get screen size
     (screen_w,screen_h) = screen_size(window)
-    n = convert(Int64,round(2*screen_h/3))-54
+    padding = @static is_apple() ? 54 : 54*2
+    n = convert(Int64,round(2*screen_h/3))-padding
 
     margin = convert(Int64,round(n/151))
     fontsize = convert(Int64,round(n/36))
