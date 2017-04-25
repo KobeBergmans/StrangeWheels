@@ -1,0 +1,21 @@
+* {
+  color: #000000;
+  font-size: 25px;
+}
+
+#MyVBox {
+  border: solid 12px #FFFFFF;
+  background-color: #FFFFFF;
+}
+
+/*#MyPanel {
+	background-color: #FFFAAA;
+}
+*/
+#ExitButton {
+	background-color: #fc2a1c;
+}
+
+#ComputeButton {
+	background-color: #76d1f9;
+}
