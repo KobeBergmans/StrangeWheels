@@ -8,7 +8,7 @@ include("widgets/CarPanel.jl")
 include("widgets/DrawPanel.jl")
 include("widgets/Movie.jl")
 include("gui_utils.jl")
-include("Wheel2road.jl")
+include("Wheel2Road.jl")
 
 gui = GUI()
 display(gui)

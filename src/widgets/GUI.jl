@@ -23,6 +23,11 @@ GUI() = begin
     (screen_w,screen_h) = screen_size(window)
     n = convert(Int64,round(2*screen_h/3))-54
 
+    margin = convert(Int64,round(n/151))
+    fontsize = convert(Int64,round(n/36))
+
+    run(`sed "s/font-size:.*$/font-size:$(fontsize)px; /" css_no_color.css`)
+
     # create all other GUI fields
     draw_area = DrawArea(n)
     draw_panel = DrawPanel()
@@ -56,21 +61,21 @@ GUI() = begin
     setproperty!(window,:resizable,false)
     setproperty!(window,:window_position,Gtk.GtkWindowPosition.GTK_WIN_POS_CENTER_ALWAYS)
     setproperty!(window,:modal,true)
-    setproperty!(vbox,:spacing,12)
+    setproperty!(vbox,:spacing,2*margin)
     setproperty!(panel,:name,"MyPanel")
     setproperty!(panel,:hexpand,true)
-    setproperty!(panel,:spacing,12)
+    setproperty!(panel,:spacing,2*margin)
     setproperty!(tbox,:hexpand,true)
     setproperty!(tbox,:name,"MyVBox")
-    setproperty!(tbox,:spacing,12)
-    setproperty!(hbox,:spacing,12)
-    setproperty!(sbox,:spacing,12)
+    setproperty!(tbox,:spacing,2*margin)
+    setproperty!(hbox,:spacing,2*margin)
+    setproperty!(sbox,:spacing,2*margin)
     setproperty!(draw_panel.compute,:name,"compute")
-    setproperty!(radiogroup,:margin,6)
-    setproperty!(radiogroup,:spacing,6)
+    setproperty!(radiogroup,:margin,margin)
+    setproperty!(radiogroup,:spacing,margin)
     setproperty!(radioframe,:hexpand,true)
-    setproperty!(radiogroup2,:margin,6)
-    setproperty!(radiogroup2,:spacing,6)
+    setproperty!(radiogroup2,:margin,margin)
+    setproperty!(radiogroup2,:spacing,margin)
     setproperty!(radioframe2,:hexpand,true)
     setproperty!(draw_panel.close,:name,"ExitButton")
     setproperty!(draw_panel.compute,:name,"ComputeButton")
@@ -125,7 +130,8 @@ GUI() = begin
     end
 
     # CSS
-    filename = @static is_apple() ? "css_no_color.css" : "css_with_color.css"
+    #filename = @static is_apple() ? "css_no_color.css" : "css_with_color.css"
+    filename = "css_no_color.css"
     style_file = joinpath(dirname(Base.source_path()), filename)
 
     screen   = Gtk.GAccessor.screen(window)
