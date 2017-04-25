@@ -26,7 +26,8 @@ GUI() = begin
     margin = convert(Int64,round(n/151))
     fontsize = convert(Int64,round(n/36))
 
-    run(`sed "s/font-size:.*$/font-size:$(fontsize)px; /" css_no_color.css`)
+    run(pipeline(`sed "s/font-size:.*$/font-size:$(fontsize)px;/g" css_no_color.css`,"css_no_color.css.tmp"))
+    mv("css_no_color.css.tmp", "css_no_color.css",remove_destination=true)
 
     # create all other GUI fields
     draw_area = DrawArea(n)
