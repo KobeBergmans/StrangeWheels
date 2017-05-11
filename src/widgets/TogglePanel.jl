@@ -60,11 +60,11 @@ function choose_wheel(t::TogglePanel)
             0.75*abs(exp(1im*θ).*(s + v*sin(n*θ + π/2)))
         elseif getproperty(t.gear,:active,Bool)
             nteeth = 10
-            involute_r.( θ * nteeth * 200.0 / (2.0 * π) )
+            0.03*involute_r.( θ * nteeth * 200 / (2.0 * π) )
         end
     end
     radius = r(θ)
-    if getproperty(t.shell,:active,Bool) # connect pacman and shell
+    if getproperty(t.shell,:active,Bool) # connect shell
         append!(θ,θ[1])
         append!(radius,radius[1])
     end
