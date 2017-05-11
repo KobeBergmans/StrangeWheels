@@ -4,6 +4,8 @@
 
 using Gtk.ShortNames, Graphics, Cairo, Interpolations
 
+import Base:next,reload
+
 # frame defintion
 type Frames{n}
     frames
@@ -81,51 +83,3 @@ function play(movie::Movie)
     dt = 0.03
     movie.timer = Timer(timer -> draw_frame(movie.canvas, movie.frames), dt, dt)
 end
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

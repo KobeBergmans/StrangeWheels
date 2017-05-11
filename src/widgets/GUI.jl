@@ -2,6 +2,8 @@
 # GUI
 # Main file to construct a Wheels GUI
 
+import Base.Multimedia.display
+
 type GUI{n}
     window
     draw_area
@@ -44,7 +46,7 @@ GUI() = begin
     condition = Condition()
 
     # layout widgets
-    tbox = Gtk.GtkBox(:h)    
+    tbox = Gtk.GtkBox(:h)
     vbox = Gtk.GtkBox(:v)
     hbox = Gtk.GtkBox(:h)
     panel = Gtk.GtkBox(:v)
@@ -144,7 +146,7 @@ GUI() = begin
     provider = CssProviderLeaf(filename=style_file)
 
     ccall((:gtk_style_context_add_provider_for_screen, Gtk.libgtk), Void,
-        (Ptr{Void}, Ptr{GObject}, Cuint), screen, provider, 1.) 
+        (Ptr{Void}, Ptr{GObject}, Cuint), screen, provider, 1.)
 
     return gui
 end
