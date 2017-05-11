@@ -11,6 +11,8 @@ type TogglePanel
     peanut
     cardioid
     shell
+    star
+    gear
     pentagram
 end
 
@@ -24,6 +26,8 @@ TogglePanel() = TogglePanel(
     Gtk.GtkRadioButton("peanut"),
     Gtk.GtkRadioButton("cardioid"),
     Gtk.GtkRadioButton("shell"),
+    Gtk.GtkRadioButton("star"),
+    Gtk.GtkRadioButton("gear"),
     Gtk.GtkRadioButton("polygon")
 )
 
@@ -49,6 +53,14 @@ function choose_wheel(t::TogglePanel)
             -sc*csc(restrict(θ,-π/2-π/N,-π/2+π/N))
         elseif getproperty(t.shell,:active,Bool)
             1/6*(1 + abs(θ))
+        elseif getproperty(t.star,:active,Bool)
+            s = 1.0
+            v = 0.3
+            n = 5
+            0.75*abs(exp(1im*θ).*(s + v*sin(n*θ + π/2)))
+        elseif getproperty(t.gear,:active,Bool)
+            nteeth = 10
+            involute_r.( θ * nteeth * 200.0 / (2.0 * π) )
         end
     end
     radius = r(θ)
@@ -57,4 +69,27 @@ function choose_wheel(t::TogglePanel)
         append!(radius,radius[1])
     end
     return θ, radius
+end
+
+function involute_r(angle)
+    #angle is given in teeth-hundredths
+    inner = 11.0
+    outer = 12.0
+    bottom_width = 22.0
+    top_width = 5.0
+    angle = mod(angle,100.0)
+    if angle > 50.0
+        # symmetry
+        angle = 100.0 - angle
+    end
+    if angle < bottom_width
+        return inner
+    end
+    if angle > (50 - top_width)
+        return outer
+    end
+    halfway = (inner + outer) / 2.0
+    transition_width = 50 - top_width - bottom_width
+    curve = 1.0 - (angle - (50 - top_width))^2 / (transition_width^2)
+    return   halfway +  curve * (outer - halfway)
 end

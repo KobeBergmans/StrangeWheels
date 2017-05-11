@@ -12,6 +12,7 @@ type DrawPanel
     animate
     help
     close
+    language
 end
 
 # outer constructor for DrawPanel
@@ -24,8 +25,68 @@ DrawPanel() = DrawPanel(
     Gtk.GtkToggleButton("check"),
     Gtk.GtkButton("animate"),
     Gtk.GtkButton("help"),
-    Gtk.GtkButton("exit")
+    Gtk.GtkButton("exit"),
+    Gtk.GtkToggleButton("nederlands")
 )
+
+function at_language_btn_clicked(gui::GUI)
+    pnl = gui.draw_panel
+    wpnl = gui.toggle_panel
+    cpnl = gui.car_panel
+    if getproperty(pnl.language,:label,AbstractString) == "nederlands"
+        setproperty!(pnl.compute,:label,"bereken")
+        setproperty!(pnl.load,:label,"laad")
+        setproperty!(pnl.smooth,:label,"verzacht")
+        setproperty!(pnl.clear,:label,"wis")
+        setproperty!(pnl.check,:label,"controleer")
+        setproperty!(pnl.animate,:label,"animeer")
+        setproperty!(pnl.close,:label,"sluit")
+        setproperty!(pnl.language,:label,"english")
+        setproperty!(gui.rfr,:label,"Kies wiel")
+        setproperty!(gui.rfr2,:label,"Kies auto")
+        setproperty!(cpnl.family_car,:label,"gezinswagen")
+        setproperty!(cpnl.race_car,:label,"sportwagen")
+        setproperty!(cpnl.fire_truck,:label,"brandweerwagen")
+        setproperty!(cpnl.school_bus,:label,"schoolbus")
+        setproperty!(cpnl.police_car,:label,"politiewagen")
+        setproperty!(cpnl.truck,:label,"vrachtwagen")
+        setproperty!(wpnl.square,:label,"vierkant")
+        setproperty!(wpnl.flower,:label,"bloem")
+        setproperty!(wpnl.corn,:label,"maiskolf")
+        setproperty!(wpnl.peanut,:label,"pinda")
+        setproperty!(wpnl.cardioid,:label,"cardioïde")
+        setproperty!(wpnl.shell,:label,"schelp")
+        setproperty!(wpnl.pentagram,:label,"veelhoek")
+        setproperty!(wpnl.gear,:label,"tandwiel")
+        setproperty!(wpnl.star,:label,"ster")
+    else
+        setproperty!(pnl.compute,:label,"compute")
+        setproperty!(pnl.load,:label,"load")
+        setproperty!(pnl.smooth,:label,"smooth")
+        setproperty!(pnl.clear,:label,"clear")
+        setproperty!(pnl.check,:label,"check")
+        setproperty!(pnl.animate,:label,"animate")
+        setproperty!(pnl.close,:label,"exit")
+        setproperty!(pnl.language,:label,"nederlands")
+        setproperty!(gui.rfr,:label,"Choose wheel")
+        setproperty!(gui.rfr2,:label,"Choose car")
+        setproperty!(cpnl.family_car,:label,"family car")
+        setproperty!(cpnl.race_car,:label,"race car")
+        setproperty!(cpnl.fire_truck,:label,"fire truck")
+        setproperty!(cpnl.school_bus,:label,"school bus")
+        setproperty!(cpnl.police_car,:label,"police car")
+        setproperty!(cpnl.truck,:label,"truck")
+        setproperty!(wpnl.square,:label,"square")
+        setproperty!(wpnl.flower,:label,"flower")
+        setproperty!(wpnl.corn,:label,"corn")
+        setproperty!(wpnl.peanut,:label,"peanut")
+        setproperty!(wpnl.cardioid,:label,"cardioid")
+        setproperty!(wpnl.shell,:label,"shell")
+        setproperty!(wpnl.pentagram,:label,"polygon")
+        setproperty!(wpnl.gear,:label,"gear")
+        setproperty!(wpnl.star,:label,"star")
+    end
+end
 
 function at_clear_btn_clicked(gui::GUI)
     gui.draw_area.coords = zeros(Float64,0,2)

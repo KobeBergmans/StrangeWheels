@@ -12,6 +12,8 @@ type GUI{n}
     car_panel
     movie
     condition
+    rfr
+    rfr2
 end
 
 GUI() = begin
@@ -21,7 +23,7 @@ GUI() = begin
 
     # get screen size
     (screen_w,screen_h) = screen_size(window)
-    padding = @static is_apple() ? 54 : 54*2
+    padding = @static is_apple() ? 54 : 75
     n = convert(Int64,round(2*screen_h/3))-padding
 
     margin = convert(Int64,round(n/151))
@@ -40,9 +42,6 @@ GUI() = begin
     car_panel = CarPanel()
     movie = Movie(n)
     condition = Condition()
-
-    # create GUI type
-    gui = GUI{n}(window, draw_area, draw_panel, drag_area, toggle_panel, adj, car_panel, movie, condition)
 
     # layout widgets
     tbox = Gtk.GtkBox(:h)    
@@ -117,6 +116,10 @@ GUI() = begin
     push!(hbox,sbox)
     push!(hbox,movie.canvas)
 
+    # create GUI type
+    gui = GUI{n}(window, draw_area, draw_panel, drag_area, toggle_panel, adj, car_panel, movie, condition, radioframe, radioframe2)
+
+
     # actions
     signal_connect((x)->at_clear_btn_clicked(gui), draw_panel.clear, "clicked")
     signal_connect((x)->at_compute_btn_clicked(gui), draw_panel.compute, "clicked")
@@ -125,6 +128,7 @@ GUI() = begin
     signal_connect((x)->at_check_btn_clicked(gui), draw_panel.check, "clicked")
     signal_connect((x)->at_animate_btn_clicked(gui), draw_panel.animate, "clicked")
     signal_connect((x)->at_help_btn_clicked(gui), draw_panel.help, "clicked")
+    signal_connect((x)->at_language_btn_clicked(gui), draw_panel.language, "clicked")
     signal_connect((x)->notify(gui.condition), draw_panel.close, "clicked")
     signal_connect((x)->notify(gui.condition), window, "destroy")
     signal_connect(window, "key-press-event") do widget, event
