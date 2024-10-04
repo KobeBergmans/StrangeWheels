@@ -24,7 +24,10 @@ GUI() = begin
     window = Gtk.GtkWindow("Wheels",10,10)
 
     # get screen size
-    (screen_w,screen_h) = screen_size(window)
+    # (screen_w,screen_h) = screen_size(window)
+    screen_w = 1000
+    screen_h = 1000
+    
     padding = @static is_apple() ? 54 : 75
     n = convert(Int64,round(2*screen_h/3))-padding
 

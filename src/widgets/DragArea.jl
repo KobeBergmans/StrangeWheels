@@ -17,7 +17,7 @@ end
 # n     size of the window
 DragArea(n::Int64) = begin
 	# construct Gtk canvas
-	canvas = @Canvas(n,n/2)
+	canvas = @Canvas(n,round(n/2))
 
 	# construct draw area
 	drag_area = DragArea{n}(canvas,Float64[],Float64[],Float64[],1,0,false)

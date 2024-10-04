@@ -243,7 +243,7 @@ function get_frame{n}(gui::GUI{n}, k, teller) # plots wheel at orientation k and
     # background
     save(ctx)
     car = read_from_png("car_images/$(get_car(gui.car_panel)).png")
-    scale(ctx,n/400,n/400)
+    Cairo.scale(ctx,n/400,n/400)
     set_source_surface(ctx, car, 0, 0)
     paint(ctx)
 
